@@ -16,7 +16,7 @@ interface Device {
   type: string
 }
 
-const devices: Device[] = []
+let devices: Device[] = []
 
 app.get('/', (req: Request, res: Response) => {
   res.send({status: 'OK'})
@@ -46,6 +46,18 @@ app.post('/devices', (req, res) => {
   devices.push({id, displayName, color, type})
 
   res.send({success: true})
+})
+
+app.delete('/devices/:id', (req, res) => {
+  const {id} = req.params
+  if (!id) return res.status(400).send({error: 'Device `id` is required.'})
+
+  const device = devices.find(d => d.id === id)
+  if (!device) return res.status(404).send({error: 'Device not found.'})
+
+  devices = devices.filter(d => d.id !== id)
+
+  res.send({success: true, data: device})
 })
 
 app.listen(PORT, () => {
