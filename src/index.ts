@@ -3,11 +3,20 @@ import 'dotenv/config'
 import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 
+import Knex from 'knex'
+
 const {PORT = 8000} = process.env
 
 const app = express()
 
 app.use(bodyParser())
+
+export const knex = Knex({
+  client: 'sqlite3',
+  connection: {
+    filename: './db.sqlite3',
+  },
+})
 
 interface Device {
   id: string
@@ -17,74 +26,89 @@ interface Device {
   state: string
 }
 
-let devices: Device[] = []
+class Devices {
+  static findAll() {
+    return knex.select('*').from('devices')
+  }
+
+  static get(id: string) {
+    return knex
+      .select('*')
+      .from('devices')
+      .where('id', id)
+      .first()
+  }
+
+  static update(id: string, data: Partial<Device>) {
+    return knex('devices')
+      .where('id', id)
+      .update(data)
+  }
+
+  static delete(id: string) {
+    return knex('devices')
+      .where('id', id)
+      .delete()
+  }
+
+  static create(data: Partial<Device>) {
+    return knex.insert(data).into('devices')
+  }
+}
 
 app.get('/', (req: Request, res: Response) => {
   res.send({status: 'OK'})
 })
 
-app.get('/devices', (req, res) => res.send({data: devices}))
+app.get('/devices', async (req, res) => {
+  const devices: Device[] = await Devices.findAll()
 
-app.get('/devices/:id', (req, res) => {
+  res.send({data: devices})
+})
+
+app.get('/devices/:id', async (req, res) => {
   const {id} = req.params
   if (!id) return res.status(400).send({error: 'Device `id` is required.'})
 
-  const device = devices.find(d => d.id === id)
-  if (!device) return res.status(404).send({error: 'Device not found.'})
+  const device: Device = await Devices.get(id)
 
   res.send({data: device})
 })
 
-app.post('/devices', (req, res) => {
-  const {id, displayName, color, type, state} = req.body
+app.post('/devices', async (req, res) => {
+  const {displayName, color, type, state} = req.body
 
-  if (!id || !displayName || !color || !type || !state) {
+  if (!displayName || !color || !type || !state) {
     return res.status(400).send({
       error: 'Field `id, displayName, color, type, state` are required.',
     })
   }
 
-  devices.push({id, displayName, color, type, state})
+  const device = {displayName, color, type, state}
 
-  res.send({success: true})
+  const result = await Devices.create(device)
+
+  res.send({success: true, result})
 })
 
-app.put('/devices/:id', (req, res) => {
+app.put('/devices/:id', async (req, res) => {
   const {id} = req.params
   if (!id) return res.status(400).send({error: 'Device `id` is required.'})
-
-  const index = devices.findIndex(x => x.id === id)
-  if (index < 0) return res.status(404).send({error: 'Device not found.'})
 
   const data = req.body as Device
-  devices[index] = {...devices[index], ...data}
 
-  res.send({success: true, data: devices[index]})
+  const result = await Devices.update(id, data)
+
+  res.send({success: true, data, result})
 })
 
-app.delete('/devices/:id', (req, res) => {
-  const {id} = req.params
-  if (!id) return res.status(400).send({error: 'Device `id` is required.'}) const device = devices.find(d => d.id === id)
-  if (!device) return res.status(404).send({error: 'Device not found.'})
-
-  devices = devices.filter(d => d.id !== id)
-
-  res.send({success: true, data: device})
-})
-
-app.post('/toggle/:id', (req, res) => {
+app.delete('/devices/:id', async (req, res) => {
   const {id} = req.params
   if (!id) return res.status(400).send({error: 'Device `id` is required.'})
 
-  const index = devices.findIndex(x => x.id === id)
-  if (index < 0) return res.status(404).send({error: 'Device not found.'})
+  await Devices.delete(id)
 
-  const device = devices[index]
-  const state = device.state === 'on' ? 'off' : 'on'
-
-  devices[index] = {...devices[index], state}
-
-  res.send({success: true, data: devices[index]})
+  res.send({success: true})
 })
 
 app.listen(PORT, () => {

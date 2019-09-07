@@ -214,5 +214,5 @@ typings/
 .rts2_cache_umd
 
 dist
-
 build
+db.sqlite3
