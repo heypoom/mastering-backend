@@ -48,6 +48,19 @@ app.post('/devices', (req, res) => {
   res.send({success: true})
 })
 
+app.put('/devices/:id', (req, res) => {
+  const {id} = req.params
+  if (!id) return res.status(400).send({error: 'Device `id` is required.'})
+
+  const index = devices.findIndex(x => x.id === id)
+  if (!index) return res.status(404).send({error: 'Device not found.'})
+
+  const data = req.body as Device
+  devices[index] = {...devices[index], ...data}
+
+  res.send({success: true})
+})
+
 app.delete('/devices/:id', (req, res) => {
   const {id} = req.params
   if (!id) return res.status(400).send({error: 'Device `id` is required.'})
