@@ -64,14 +64,27 @@ app.put('/devices/:id', (req, res) => {
 
 app.delete('/devices/:id', (req, res) => {
   const {id} = req.params
-  if (!id) return res.status(400).send({error: 'Device `id` is required.'})
-
-  const device = devices.find(d => d.id === id)
+  if (!id) return res.status(400).send({error: 'Device `id` is required.'}) const device = devices.find(d => d.id === id)
   if (!device) return res.status(404).send({error: 'Device not found.'})
 
   devices = devices.filter(d => d.id !== id)
 
   res.send({success: true, data: device})
+})
+
+app.post('/toggle/:id', (req, res) => {
+  const {id} = req.params
+  if (!id) return res.status(400).send({error: 'Device `id` is required.'})
+
+  const index = devices.findIndex(x => x.id === id)
+  if (index < 0) return res.status(404).send({error: 'Device not found.'})
+
+  const device = devices[index]
+  const state = device.state === 'on' ? 'off' : 'on'
+
+  devices[index] = {...devices[index], state}
+
+  res.send({success: true, data: devices[index]})
 })
 
 app.listen(PORT, () => {
