@@ -13,16 +13,35 @@ app.get('/', (req: Request, res: Response) => {
   res.send({status: 'OK'})
 })
 
-const names: string[] = []
+interface User {
+  username: string
+  email: string
+}
 
-app.get('/names', (req, res) => res.send({data: names}))
+const users: User[] = []
 
-app.post('/names', (req, res) => {
-  const {name} = req.body
-  if (!name) return res.status(400).send({error: 'Field `name` is required'})
+app.get('/users', (req, res) => res.send({data: users}))
 
-  names.push(name)
+app.post('/users', (req, res) => {
+  const {username, email} = req.body
+
+  if (!username || !email) {
+    return res.status(400).send({error: 'Username and email is required'})
+  }
+
+  users.push({username, email})
+
   res.send({success: true})
+})
+
+app.get('/users/:username', (req, res) => {
+  const {username} = req.params
+  if (!username) return res.send({error: 'Username is not provided.'})
+
+  const data = users.find(u => u.username === username)
+  if (!data) return res.send({error: 'User not found.'})
+
+  res.send({data})
 })
 
 app.listen(PORT, () => {
