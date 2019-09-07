@@ -59,7 +59,7 @@ app.put('/devices/:id', (req, res) => {
   const data = req.body as Device
   devices[index] = {...devices[index], ...data}
 
-  res.send({success: true})
+  res.send({success: true, data: devices[index]})
 })
 
 app.delete('/devices/:id', (req, res) => {
