@@ -54,7 +54,7 @@ app.put('/devices/:id', (req, res) => {
   if (!id) return res.status(400).send({error: 'Device `id` is required.'})
 
   const index = devices.findIndex(x => x.id === id)
-  if (!index) return res.status(404).send({error: 'Device not found.'})
+  if (index < 0) return res.status(404).send({error: 'Device not found.'})
 
   const data = req.body as Device
   devices[index] = {...devices[index], ...data}
