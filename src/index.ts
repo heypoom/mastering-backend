@@ -31,9 +31,9 @@ class Devices {
     return knex.select('*').from('devices')
   }
 
-  static get(id: string) {
+  static get(id: string, fields: string = '*') {
     return knex
-      .select('*')
+      .select(fields)
       .from('devices')
       .where('id', id)
       .first()
@@ -109,6 +109,18 @@ app.delete('/devices/:id', async (req, res) => {
   await Devices.delete(id)
 
   res.send({success: true})
+})
+
+app.post('/toggle/:id', async (req, res) => {
+  const {id} = req.params
+  if (!id) return res.status(400).send({error: 'Device `id` is required.'})
+
+  const {state} = await Devices.get(id, 'state')
+  const nextState = state === 'on' ? 'off' : 'on'
+
+  await Devices.update(id, {state: nextState})
+
+  res.send({success: true, state: nextState})
 })
 
 app.listen(PORT, () => {
