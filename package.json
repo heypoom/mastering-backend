@@ -1,0 +1,66 @@
+{
+  "name": "mastering-backend",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "backpack",
+    "build": "backpack build",
+    "test": "jest",
+    "format": "prettier --write 'src/**'"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/jest": "^24.0.13",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "cache-loader": "^3.0.1",
+    "dotenv": "^8.0.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "fork-ts-checker-webpack-plugin": "^1.3.4",
+    "husky": "^3.0.5",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "thread-loader": "^2.1.2",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.2",
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.1",
+    "axios": "^0.19.0",
+    "backpack-core": "^0.8.3",
+    "express": "^4.17.1",
+    "googleapis": "^40.0.0",
+    "qs": "^6.7.0"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[jt]s?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test/utils/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
