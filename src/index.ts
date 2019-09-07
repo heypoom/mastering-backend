@@ -14,6 +14,7 @@ interface Device {
   displayName: string
   color: string
   type: string
+  state: string
 }
 
 let devices: Device[] = []
@@ -35,15 +36,15 @@ app.get('/devices/:id', (req, res) => {
 })
 
 app.post('/devices', (req, res) => {
-  const {id, displayName, color, type} = req.body
+  const {id, displayName, color, type, state} = req.body
 
-  if (!id || !displayName || !color || !type) {
-    return res
-      .status(400)
-      .send({error: 'Field `id, displayName, color, type` are required.'})
+  if (!id || !displayName || !color || !type || !state) {
+    return res.status(400).send({
+      error: 'Field `id, displayName, color, type, state` are required.',
+    })
   }
 
-  devices.push({id, displayName, color, type})
+  devices.push({id, displayName, color, type, state})
 
   res.send({success: true})
 })
