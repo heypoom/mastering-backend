@@ -1,16 +1,14 @@
 import 'dotenv/config'
 
-import express, {Request, Response} from 'express'
-import bodyParser from 'body-parser'
+import Knex from 'knex'
 
 const {PORT = 8000} = process.env
 
-const app = express()
-
-app.use(bodyParser())
-
-app.get('/', (req: Request, res: Response) => {
-  res.send({status: 'OK'})
+export const knex = Knex({
+  client: 'sqlite3',
+  connection: {
+    filename: './dev.sqlite3',
+  },
 })
 
 app.listen(PORT, () => {
