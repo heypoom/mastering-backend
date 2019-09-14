@@ -1,30 +1,20 @@
 import 'dotenv/config'
 
-import {middleware as lineMiddleware} from '@line/bot-sdk'
-
 import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 
 import {webhookHandler} from './webhook'
 import {errorHandler} from './middleware/error-handler'
 
+import {lineMiddleware} from './line'
+
+const {PORT = 8000} = process.env
+
 function main() {
   const app = express()
 
-  // Retrieve LINE's channel access token and secret.
-  const {CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET, PORT = 8000} = process.env
-
-  if (!CHANNEL_ACCESS_TOKEN || !CHANNEL_SECRET) {
-    throw new Error('Channel Access Token is not present.')
-  }
-
-  const lineConfig = {
-    channelAccessToken: CHANNEL_ACCESS_TOKEN,
-    channelSecret: CHANNEL_SECRET,
-  }
-
   // Setup LINE webhook endpoint.
-  app.post('/webhook', lineMiddleware(lineConfig), webhookHandler)
+  app.post('/webhook', lineMiddleware, webhookHandler)
 
   // Setup body-parser to parse URL encoded and JSON inputs.
   app.use(bodyParser.urlencoded({extended: true}))

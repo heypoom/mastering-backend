@@ -1,7 +1,24 @@
 import {Request, Response} from 'express'
 
-export function webhookHandler(req: Request, res: Response) {
-  console.log('>', req.body)
+import {client} from './line'
 
-  res.send({ok: true})
+export async function webhookHandler(req: Request, _res: Response) {
+  try {
+    const {events} = req.body
+
+    console.debug('Events Count:', events.length)
+
+    for (let event of events) {
+      const {userId} = event.source
+
+      console.log('>', event)
+
+      await client.pushMessage(userId, {
+        type: 'text',
+        text: 'สวัสดีวันจันทร์ เยอรมันอากาศดี',
+      })
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
 }
