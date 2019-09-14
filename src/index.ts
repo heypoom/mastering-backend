@@ -11,6 +11,7 @@ import {errorHandler} from './middleware/error-handler'
 function main() {
   const app = express()
 
+  // Retrieve LINE's channel access token and secret.
   const {CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET, PORT = 8000} = process.env
 
   if (!CHANNEL_ACCESS_TOKEN || !CHANNEL_SECRET) {
@@ -22,14 +23,18 @@ function main() {
     channelSecret: CHANNEL_SECRET,
   }
 
+  // Setup LINE webhook endpoint.
   app.post('/webhook', lineMiddleware(lineConfig), webhookHandler)
 
-  app.use(bodyParser())
+  // Setup body-parser to parse URL encoded and JSON inputs.
+  app.use(bodyParser.urlencoded({extended: true}))
+  app.use(bodyParser.json())
 
   app.get('/', (_req: Request, res: Response) => {
     res.send({status: 'OK'})
   })
 
+  // Handle error responses here.
   app.use(errorHandler)
 
   app.listen(PORT, () => {
