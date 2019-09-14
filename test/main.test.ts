@@ -1,5 +1,5 @@
-describe('stuff', () => {
-  it('should work', () => {
-    expect(1).toBe(1)
+describe('chatbot', () => {
+  it('should log my book purchase', () => {
+    // TODO...
   })
 })
