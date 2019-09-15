@@ -13,7 +13,13 @@ export async function webhookHandler(req: Request, _res: Response) {
       const {userId} = event.source
       if (!userId) continue
 
-      console.log('>', event)
+      console.debug('>', event)
+
+      if (event.type !== 'message') continue
+      if (event.message.type !== 'text') continue
+
+      const {text} = event.message
+      console.log('💬:', text)
 
       await client.pushMessage(userId, {
         type: 'text',
