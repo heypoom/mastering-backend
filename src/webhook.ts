@@ -3,6 +3,8 @@ import {WebhookRequestBody} from '@line/bot-sdk'
 
 import {client} from './line'
 
+import {Bot} from './Bot'
+
 export async function webhookHandler(req: Request, _res: Response) {
   try {
     const {events} = req.body as WebhookRequestBody
@@ -21,9 +23,11 @@ export async function webhookHandler(req: Request, _res: Response) {
       const {text} = event.message
       console.log('💬:', text)
 
+      const response = await Bot(text)
+
       await client.pushMessage(userId, {
         type: 'text',
-        text: 'สวัสดีวันจันทร์ เยอรมันอากาศดี',
+        text: response,
       })
     }
   } catch (error) {
