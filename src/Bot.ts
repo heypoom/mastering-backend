@@ -4,6 +4,8 @@ import {BotContext} from './BotContext'
 import {MaidCafeResponse} from './types/MaidCafeMenu'
 
 export const defaultContext: BotContext = {
+  bookPurchases: [],
+
   async getIP() {
     const {data} = await axios.get('https://icanhazip.com')
 
@@ -14,6 +16,14 @@ export const defaultContext: BotContext = {
     const {data} = await axios.get('https://maidreamin.now.sh/menu')
 
     return data
+  },
+
+  async addBookPurchase(amount: number) {
+    this.bookPurchases.push(Number(amount))
+  },
+
+  async getPurchaseAmount() {
+    return this.bookPurchases.reduce((a, b) => a + b, 0)
   },
 }
 
@@ -35,6 +45,12 @@ export async function Bot(
     return menus[0]
   }
 
+  if (text.includes('ซื้อหนังสือ') && text.includes('กี่บาท')) {
+    const amount = await context.getPurchaseAmount()
+
+    return `ซื้อหนังสือไป ${amount} บาท`
+  }
+
   const bookRegex = /b(\d+)/
 
   if (bookRegex.test(text)) {
@@ -42,6 +58,8 @@ export async function Bot(
     if (!match) return 'จำนวนไม่ถูกต้อง'
 
     const amount = match[1]
+
+    await context.addBookPurchase(Number(amount))
 
     return `ซื้อหนังสือ ${amount} บาท`
   }
