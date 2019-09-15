@@ -14,7 +14,7 @@ RUN apk update && apk --no-cache add python g++ make
 COPY package.json yarn.lock /tmp/
 
 # Add the yarn cache to speed up things
-# ADD .yarn-cache.tgz /
+ADD .yarn-cache.tgz /
 
 # Install node dependencies with yarn
 RUN cd /tmp && yarn --pure-lockfile
@@ -23,7 +23,7 @@ RUN cd /tmp && yarn --pure-lockfile
 RUN cd $build && ln -s /tmp/node_modules
 
 # Copy files into workspace
-COPY package.json webpack.config.js $build/
+COPY package.json backpack.config.js $build/
 COPY src $build/src
 
 # Set the node environment to production mode for webpack
