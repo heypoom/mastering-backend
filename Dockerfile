@@ -23,7 +23,7 @@ RUN cd /tmp && yarn --pure-lockfile
 RUN cd $build && ln -s /tmp/node_modules
 
 # Copy files into workspace
-COPY package.json backpack.config.js $build/
+COPY package.json backpack.config.js tsconfig.json $build/
 COPY src $build/src
 
 # Set the node environment to production mode for webpack
@@ -59,7 +59,7 @@ COPY --from=build $build/dist $app/
 COPY --from=build $build/node_modules $app/node_modules
 
 # Copy the configuration files over
-COPY package.json yarn.lock pm2.yml $app/
+COPY package.json tsconfig.json yarn.lock pm2.yml $app/
 
 # Configure the file uploads directory
 RUN cd $app && mkdir uploads && chmod -R 744 uploads && chown -R node:node uploads
