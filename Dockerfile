@@ -30,7 +30,7 @@ COPY src $build/src
 ENV NODE_ENV production
 
 # Build the production bundle
-RUN npx backpack build
+RUN timeout 9 npx backpack build
 
 # Prune the development dependencies
 RUN cd /tmp && yarn --production --prefer-offline --ignore-scripts
