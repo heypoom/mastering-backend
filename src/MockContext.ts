@@ -1,7 +1,6 @@
 import {BotContext} from './BotContext'
-import {MaidCafeResponse} from 'types/MaidCafeMenu'
-
-import {maidCafeResponse} from '../test/utils/maid-cafe-response'
+import {MaidCafeResponse} from './types/MaidCafeMenu'
+import {maidCafeResponse} from './utils/maid-cafe-response'
 
 export function buildMockContext(): BotContext {
   return {
