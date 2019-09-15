@@ -15,7 +15,10 @@ export async function webhookHandler(req: Request, _res: Response) {
 
       console.log('>', event)
 
-      const {type, text} = event.message
+      if (event.type !== 'message') continue
+      if (event.message.type !== 'text') continue
+
+      const {text} = event.message
 
       if (text.includes('กระเทย') && text.includes('ปลา')) {
         await client.pushMessage(userId, {
