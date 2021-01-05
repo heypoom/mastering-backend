@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@types/express": "^4.17.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "backpack-core": "^0.8.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
